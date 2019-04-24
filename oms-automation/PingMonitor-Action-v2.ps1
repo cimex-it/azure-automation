@@ -55,7 +55,7 @@ Function Post-LogData($WorkspaceId, $WorkspaceKey, $body, $logType)
 }
 
 try{
-    Get-AutomationVariable -Name $VariableName -ErrorAction Stop
+    $networkDevicesJson = Get-AutomationVariable -Name $VariableName
 } catch {
     Write-Output "Please create an Automation Variable named '$VariableName' before continuing"
     throw "Missing Automation Variable '$VariableName'"
@@ -63,8 +63,6 @@ try{
 
 $networkDevicesJson = Get-AutomationVariable -Name $VariableName
 $networkDevices = ConvertFrom-Json $networkDevicesJson
-
-$networkDevicesJson
 
 $pingResultsJson = "[$($EVENTDATA.EventProperties.Data)]"
 $pingResultsArray = $pingResultsJson | ConvertFrom-Json
@@ -99,7 +97,6 @@ foreach ($device in $networkDevices) {
     $EVENTDATA = [pscustomobject]@{EventProperties=$EventProperties}
 
     $json = "[$($EVENTDATA.EventProperties.Data)]"
-    #Write-Output $json
     $body = ([System.Text.Encoding]::UTF8.GetBytes($json))
     
     $post = Post-LogData -WorkspaceId $WorkspaceId -WorkspaceKey $WorkspaceKey -body ([System.Text.Encoding]::UTF8.GetBytes($json)) -logType $logType
