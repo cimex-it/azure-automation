@@ -1,6 +1,8 @@
 param(
     $EVENTDATA
 )
+
+# Set variables
 $WorkspaceId = Get-AutomationVariable -Name 'PingMonitorWorkspaceId'
 $WorkspaceKey = Get-AutomationVariable -Name 'PingMonitorWorkspaceKey'
 $LogType = 'PingMonitor'
