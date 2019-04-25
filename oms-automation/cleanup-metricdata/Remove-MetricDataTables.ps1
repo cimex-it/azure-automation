@@ -8,7 +8,7 @@ Login-AzAccount -ServicePrincipal -Tenant $account.TenantID -ApplicationId $acco
 
 $removeDate = (Get-Date).AddDays(-$daysToKeep-10).ToString('yyyyMMdd')
 
-$storageAccounts = Get-AzStorageAccount | where {$_.SKUName -eq "StandardLRS"}
+$storageAccounts = Get-AzStorageAccount | where {$_.Sku.Name -eq "StandardLRS"}
 
 foreach ($sa in $storageAccounts) {
     $saContext = (Get-AzStorageAccount -ResourceGroupName $sa.ResourceGroupName -Name $sa.StorageAccountName).Context
