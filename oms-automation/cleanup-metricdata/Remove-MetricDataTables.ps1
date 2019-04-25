@@ -15,29 +15,25 @@
 
 #>
 
-workflow Remove-MetricDataTables {
+Param (
+    # Keep log data for the following number of days
+    [Parameter (Mandatory= $false)]
+    [int] $DaysToKeep = 30
+)
 
-    param (
-        # Keep log data for the following number of days
-        [Parameter (Mandatory= $false)]
-        [int] $DaysToKeep = 30
-    )
+# Calculate remove date
+$removeDate = (Get-Date).AddDays(-$DaysToKeep-10).ToString('yyyyMMdd')
 
-    # Calculate remove date
-    $removeDate = (Get-Date).AddDays(-$DaysToKeep-10).ToString('yyyyMMdd')
+# Login to Azure
+$account = Get-AutomationConnection -Name AzureRunAsConnection
+Login-AzAccount -ServicePrincipal -Tenant $account.TenantID -ApplicationId $account.ApplicationID -CertificateThumbprint $account.CertificateThumbprint -Environment "AzureCloud"
 
-    # Login to Azure
-    $account = Get-AutomationConnection -Name AzureRunAsConnection
-    Login-AzAccount -ServicePrincipal -Tenant $account.TenantID -ApplicationId $account.ApplicationID -CertificateThumbprint $account.CertificateThumbprint -Environment "AzureCloud"
+#List all Standard LRS storage accounts
+$storageAccounts = Get-AzStorageAccount | where {$_.Sku.Name -eq "StandardLRS"}
 
-    #List all Standard LRS storage accounts
-    $storageAccounts = Get-AzStorageAccount | where {$_.Sku.Name -eq "StandardLRS"}
-
-    # Go through all storage acounts and remove metric tables
-    foreach ($sa in $storageAccounts) {
-        $saContext = (Get-AzStorageAccount -ResourceGroupName $sa.ResourceGroupName -Name $sa.StorageAccountName).Context
-        $storageTables = Get-AzStorageTable -Context $saContext | where {$_.Name -match "^WADMetrics.*(\d\d\d\d\d\d\d\d)$" -and $Matches[1] -lt $removeDate}
-        $storageTables | Remove-AzStorageTable -Context $saContext -Force -Verbose
-    }
-
+# Go through all storage acounts and remove metric tables
+foreach ($sa in $storageAccounts) {
+    $saContext = (Get-AzStorageAccount -ResourceGroupName $sa.ResourceGroupName -Name $sa.StorageAccountName).Context
+    $storageTables = Get-AzStorageTable -Context $saContext | where {$_.Name -match "^WADMetrics.*(\d\d\d\d\d\d\d\d)$" -and $Matches[1] -lt $removeDate}
+    $storageTables | Remove-AzStorageTable -Context $saContext -Force -Verbose
 }
