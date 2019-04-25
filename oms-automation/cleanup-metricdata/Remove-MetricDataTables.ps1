@@ -2,10 +2,10 @@
 
     .DESCRIPTION
 
-      Script for removing metrics data from diagnostics storage accounts    
+      Azure Automation runbook for removing metrics data from diagnostics storage accounts    
     
-      This script removes all Storage Tables created by guest-level monitoring older than a specified number of days.
-      It goes through all storage accounts in a subscription.
+      This PowerShell runbook removes all Storage Tables created by guest-level monitoring older than a specified number of days.
+      Processes all storage accounts in a subscription.
 
     .NOTES
 
