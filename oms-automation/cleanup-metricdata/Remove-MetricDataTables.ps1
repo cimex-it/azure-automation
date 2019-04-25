@@ -30,7 +30,7 @@ Login-AzAccount -ServicePrincipal -Tenant $account.TenantID -ApplicationId $acco
 #List all Standard LRS storage accounts
 $storageAccounts = Get-AzStorageAccount | where {$_.Sku.Name -eq "StandardLRS"}
 
-# Go through all storage acounts and 
+# Go through all storage acounts and remove metric tables
 foreach ($sa in $storageAccounts) {
     $saContext = (Get-AzStorageAccount -ResourceGroupName $sa.ResourceGroupName -Name $sa.StorageAccountName).Context
     $storageTables = Get-AzStorageTable -Context $saContext | where {$_.Name -match "^WADMetrics.*(\d\d\d\d\d\d\d\d)$" -and $Matches[1] -lt $removeDate}
