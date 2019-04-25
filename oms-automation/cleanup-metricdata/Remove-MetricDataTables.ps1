@@ -12,5 +12,5 @@ $storageAccounts = Get-AzStorageAccount
 
 foreach ($sa in $storageAccounts) {
     $saContext = (Get-AzStorageAccount -ResourceGroupName $sa.ResourceGroupName -Name $sa.StorageAccountName).Context
-    Get-AzStorageTable -Context $saContext | where {$_.Name -match "^WADMetrics.*(\d\d\d\d\d\d\d\d)$" -and $Matches[1] -lt $removeDate} | Remove-AzStorageTable -Context $saContext -Force
+    Get-AzStorageTable -Context $saContext | where {$_.Name -match "^WADMetrics.*(\d\d\d\d\d\d\d\d)$" -and $Matches[1] -lt $removeDate} | Remove-AzStorageTable -Context $saContext -Force -Verbose
 }
