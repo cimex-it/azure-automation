@@ -15,9 +15,8 @@
 
 #>
 
-Param (
-    # Keep log data for the following number of days
-    [Parameter (Mandatory= $false)]
+Param(
+    [Parameter (Mandatory= $false,HelpMessage="Specify number of days to keep data")]
     [int] $DaysToKeep = 30
 )
 
