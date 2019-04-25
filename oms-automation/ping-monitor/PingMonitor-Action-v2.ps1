@@ -91,7 +91,7 @@ foreach ($device in $networkDevices) {
     $Properties.StatusInt = $status_d
     if ("Description" -in $device.PSobject.Properties.Name) {$Properties.Description = $device.Description} else {$Properties.Description = $null}
     if ("Location" -in $device.PSobject.Properties.Name) {$Properties.Location = $device.Location} else {$Properties.Location = $null}
-    if ("GeoHash" -in $device.PSobject.Properties.Name) {$Properties.GeoHast = $device.GeoHash} else {$Properties.GeoHash = $null}
+    if ("GeoHash" -in $device.PSobject.Properties.Name) {$Properties.GeoHash = $device.GeoHash} else {$Properties.GeoHash = $null}
     $Properties.Latency = $responseTime
     $Data = $Properties | ConvertTo-Json
     
