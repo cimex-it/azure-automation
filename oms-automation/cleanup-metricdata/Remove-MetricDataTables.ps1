@@ -15,10 +15,11 @@
 
 #>
 
-$Params = @{
+$Param (
     # Keep log data for the following number of days
-    [int]$DaysToKeep = 30
-}
+    [Parameter (Mandatory= $false)] 
+    [int] $DaysToKeep = 30
+)
 
 # Calculate remove date
 $removeDate = (Get-Date).AddDays(-$DaysToKeep-10).ToString('yyyyMMdd')
