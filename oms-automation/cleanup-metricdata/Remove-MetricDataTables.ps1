@@ -1,7 +1,7 @@
 # Script for removing metrics data from diagnostics storage accounts
 
 # Keep log data for the following amount of days
-$daysToKeep = 60
+$daysToKeep = 30
 
 $account = Get-AutomationConnection -Name AzureRunAsConnection
 Login-AzAccount -ServicePrincipal -Tenant $account.TenantID -ApplicationId $account.ApplicationID -CertificateThumbprint $account.CertificateThumbprint -Environment "AzureCloud"
