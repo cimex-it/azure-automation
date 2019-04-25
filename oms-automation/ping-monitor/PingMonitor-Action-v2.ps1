@@ -89,9 +89,9 @@ foreach ($device in $networkDevices) {
     $Properties.IPAddress = $device.IPAddress
     $Properties.Status = $status_s
     $Properties.StatusInt = $status_d
-    $Properties.Description = $device.Description
-    $Properties.Location = $device.Location
-    $Properties.GeoHash = $device.GeoHash
+    if ("Description" -in $device.PSobject.Properties.Name) {$Properties.Description = $device.Description} else {$Properties.Description = $null}
+    if ("Location" -in $device.PSobject.Properties.Name) {$Properties.Location = $device.Location} else {$Properties.Location = $null}
+    if ("GeoHash" -in $device.PSobject.Properties.Name) {$Properties.GeoHast = $device.GeoHash} else {$Properties.GeoHash = $null}
     $Properties.Latency = $responseTime
     $Data = $Properties | ConvertTo-Json
     
