@@ -7,7 +7,7 @@ function Ping-Monitor
         [Switch]$RawOutput = $false
     )
 
-    $timeout = 2500
+    $timeout = 1500
 
     try{
         Get-AutomationVariable -Name $VariableName -ErrorAction Stop
