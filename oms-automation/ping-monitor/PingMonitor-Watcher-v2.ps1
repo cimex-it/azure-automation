@@ -46,45 +46,10 @@ function Ping-Monitor
             $pending = 0
         }
 
-        $index = [array]::indexof($networkDevices,$_)
-
-        Write-Progress -Activity "Sending ping to" -Id 1 -status $_.IPAddress -PercentComplete (($index / $IpTotal)  * 100)
-
-        $percentComplete = ($($index - $pending), 0 | Measure-Object -Maximum).Maximum
-
-        Write-Progress -Activity "ICMP requests pending" -Id 2 -ParentId 1 -Status ($index - $pending) -PercentComplete ($percentComplete/$IpTotal * 100)
-
         Start-Sleep -Milliseconds $Interval
     }
 
-    Write-Progress -Activity "Done sending ping requests" -Id 1 -Status 'Waiting' -PercentComplete 100 
-
-    while ($pending -lt $IpTotal) {
-
-        Wait-Event -SourceIdentifier "ID-Ping*" | Out-Null
-
-        Start-Sleep -Milliseconds 10
-
-        try
-        {
-
-            $pending = (Get-Event -SourceIdentifier "ID-Ping*").Count
-
-        }
-        catch [System.InvalidOperationException]
-        {
-            $pending = 0
-        }
-
-        $percentComplete = ($($IpTotal - $pending), 0 | Measure-Object -Maximum).Maximum
-
-        Write-Progress -Activity "ICMP requests pending" -Id 2 -ParentId 1 -Status ($IpTotal - $pending) -PercentComplete ($percentComplete/$IpTotal * 100)
-    }
-
-    Write-Progress -Completed -Id 2 -ParentId 1 -Activity "Completed"
-    Write-Progress -Completed -Id 1 -Activity "Completed"
-
-     $Reply = @()
+    $Reply = @()
 
     if ($RawOutput)
     {
