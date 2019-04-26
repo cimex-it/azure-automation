@@ -1,8 +1,8 @@
 
 $VariableName = 'PingMonitorDevices'
 
-$storageAccount = "cimexmonitoringdata01"
-$resourceGroup = "oms-rg"
+$storageAccount = Get-AutomationVariable -Name "PingMonitorConfigStorageAccount"
+$resourceGroup = Get-AutomationVariable -Name "PingMonitorConfigStorageAccountRG"
 $storageTableName = "monitoringconfig"
 $partitionKey = "networkDevice"
 
