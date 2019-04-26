@@ -5,12 +5,11 @@ function Ping-Monitor
         [int]$Interval = 30,
         [string]$VariableName = 'PingMonitorDevices',
         [Switch]$RawOutput = $false
+        [int]$Timeout = 1500
     )
 
-    $timeout = 1500
-
     try{
-        Get-AutomationVariable -Name $VariableName -ErrorAction Stop
+        $networkDevicesJson = Get-AutomationVariable -Name $VariableName -ErrorAction Stop
     } catch {
         Write-Output "Please create an Automation Variable named '$VariableName' before continuing"
         throw "Missing Automation Variable '$VariableName'"
