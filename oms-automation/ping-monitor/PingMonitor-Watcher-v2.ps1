@@ -35,17 +35,6 @@ function Ping-Monitor
 
         Remove-Variable $VarName
 
-        try
-        {
-
-            $pending = (Get-Event -SourceIdentifier "ID-Ping*").Count
-
-        } 
-        catch [System.InvalidOperationException]
-        {
-            $pending = 0
-        }
-
         Start-Sleep -Milliseconds $Interval
     }
 
