@@ -4,7 +4,7 @@ function Ping-Monitor
     Param(
         [int]$Interval = 30,
         [string]$VariableName = 'PingMonitorDevices',
-        [Switch]$RawOutput = $false
+        [switch]$RawOutput = $false,
         [int]$Timeout = 1500
     )
 
@@ -18,31 +18,33 @@ function Ping-Monitor
     $networkDevicesJson = Get-AutomationVariable -Name $VariableName
     $networkDevices = ConvertFrom-Json $networkDevicesJson
 
-    $IpTotal = $networkDevices.Count
+    #$IpTotal = $networkDevices.Count
 
     Get-Event -SourceIdentifier "ID-Ping*" | Remove-Event
     Get-EventSubscriber -SourceIdentifier "ID-Ping*" | Unregister-Event
 
     $networkDevices | ForEach-Object {
 
-        [string]$VarName = "Ping_" + $_.IPAddress
+        for($i=0; $i -le 2; $i++) {
+            [string]$VarName = "Ping" + $i + "_" + $_.IPAddress
 
-        New-Variable -Name $VarName -Value (New-Object System.Net.NetworkInformation.Ping)
+            New-Variable -Name $VarName -Value (New-Object System.Net.NetworkInformation.Ping)
 
-        Register-ObjectEvent -InputObject (Get-Variable $VarName -ValueOnly) -EventName PingCompleted -SourceIdentifier "ID-$VarName"
+            Register-ObjectEvent -InputObject (Get-Variable $VarName -ValueOnly) -EventName PingCompleted -SourceIdentifier "ID-$VarName"
 
-        (Get-Variable $VarName -ValueOnly).SendAsync($_.IPAddress,$timeout,$VarName)
+            (Get-Variable $VarName -ValueOnly).SendAsync($_.IPAddress,$Timeout,$VarName)
 
-        Remove-Variable $VarName
+            Remove-Variable $VarName
 
-        Start-Sleep -Milliseconds $Interval
+            Start-Sleep -Milliseconds $Interval
+        }
     }
 
     $Reply = @()
 
     if ($RawOutput)
     {
-        Get-Event -SourceIdentifier "ID-Ping*" | foreach { 
+        Get-Event -SourceIdentifier "ID-Ping*" | ForEach-Object { 
             if ($_.SourceEventArgs.Reply.Status -eq "Success")
             {
                 $Reply += $_.SourceEventArgs.Reply
@@ -72,7 +74,14 @@ function Ping-Monitor
         Write-Verbose "Ping-IPRange : No IP address responded" -Verbose
     }
 
-    return $Reply
+    $ReplyGroup = $Reply | Group-Object -Property IPAddress | Foreach-Object {
+        New-Object PSObject -Property @{
+            IPAddress = $_.Name
+            ResponseTime = [int]($_.Group | Measure-Object ResponseTime -Average).Average
+        }
+    }
+
+    return $ReplyGroup
 }
 
 $result = Ping-Monitor -Interval 10
