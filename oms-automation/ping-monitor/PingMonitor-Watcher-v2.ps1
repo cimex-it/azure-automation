@@ -23,9 +23,10 @@ function Ping-Monitor
     Get-Event -SourceIdentifier "ID-Ping*" | Remove-Event
     Get-EventSubscriber -SourceIdentifier "ID-Ping*" | Unregister-Event
 
-    $networkDevices | ForEach-Object {
+    for($i=0; $i -le 1; $i++) {
 
-        for($i=0; $i -le 1; $i++) {
+        $networkDevices | ForEach-Object {
+        
             [string]$VarName = "Ping" + $i + "_" + $_.IPAddress
 
             New-Variable -Name $VarName -Value (New-Object System.Net.NetworkInformation.Ping)
@@ -38,6 +39,7 @@ function Ping-Monitor
 
             Start-Sleep -Milliseconds $Interval
         }
+        
     }
 
     $Reply = @()
