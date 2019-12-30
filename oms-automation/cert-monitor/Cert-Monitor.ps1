@@ -74,7 +74,7 @@ foreach ($website in $websites) {
                 param($sender, $certificate, $chain, $sslPolicyErrors) 
                 return $true
             })
-            $Stream.AuthenticateAsClient($CommonName)
+            $Stream.AuthenticateAsClient($CommonName,$null,[System.Security.Authentication.SslProtocols]::Tls12, $null)
 
             $Cert = $Stream.Get_RemoteCertificate()
             $CN=(($cert.Subject -split "=")[1] -split ",")[0]
