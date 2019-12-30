@@ -5,7 +5,7 @@ function Ping-Monitor
         [int]$Interval = 30,
         [string]$VariableName = 'PingMonitorDevices',
         [switch]$RawOutput = $false,
-        [int]$Timeout = 1500
+        [int]$Timeout = 2000
     )
 
     try{
@@ -25,7 +25,7 @@ function Ping-Monitor
 
     $networkDevices | ForEach-Object {
 
-        for($i=0; $i -le 2; $i++) {
+        for($i=0; $i -le 1; $i++) {
             [string]$VarName = "Ping" + $i + "_" + $_.IPAddress
 
             New-Variable -Name $VarName -Value (New-Object System.Net.NetworkInformation.Ping)
