@@ -8,7 +8,8 @@ param(
     [string] $Position,
     [string] $Department,
     [string] $Company,
-    [string] $ManagerEmail
+    [string] $ManagerEmail,
+    [string] $ADOU = "OU=Users_Office_365,DC=CimexGroup,DC=cz"
 )
 
 Import-Module ActiveDirectory                        
@@ -25,7 +26,7 @@ Exit }
 If (Get-ADUser -Filter "samaccountname -eq '$login'") { Write-Error "User account with this login already exists."
 Exit }
   
-$userPath = "OU=Users_Office_365,DC=CimexGroup,DC=cz"
+$userPath = $ADOU
   
 if (!([adsi]::Exists("LDAP://$userPath"))) { Write-Error "AD path doesn't exist."
 Exit }
