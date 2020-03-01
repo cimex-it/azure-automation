@@ -1,8 +1,9 @@
 param( 
-    [Parameter(ParameterSetName="Default",Mandatory=$true)]
+    [Parameter(Mandatory=$true)]
     [string] $FullName,
-    [Parameter(ParameterSetName="Default",Mandatory=$true)]
+    [Parameter(Mandatory=$true)]
     [string] $Email,
+    [Parameter(Mandatory=$true)]
     [string] $InitialPwd,
     [string] $Position,
     [string] $Department,
