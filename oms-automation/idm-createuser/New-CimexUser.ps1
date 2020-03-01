@@ -50,3 +50,8 @@ $userAccount | Set-ADUser -Add @{
 }
 
 $userAccount | Set-ADUser -Add @{proxyAddresses="sip:$email,SMTP:$email" -Split ","}
+
+$licenseGroup = "License - O365 E3"
+$group = Get-ADGroup -Filter "name -like '$licenseGroup'"
+
+Add-ADGroupMember -Identity $group -Members $userAccount
