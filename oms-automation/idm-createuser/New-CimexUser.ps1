@@ -57,3 +57,5 @@ $licenseGroup = "License - O365 E3"
 $group = Get-ADGroup -Filter "name -like '$licenseGroup'"
 
 Add-ADGroupMember -Identity $group -Members $userAccount
+
+Write-Output "User has been successfully created"
