@@ -8,6 +8,7 @@ param(
     [string] $Position,
     [string] $Department,
     [string] $Company,
+    [string] $CostCenter,
     [string] $ManagerEmail,
     [string] $ADOU = "OU=Users_Office_365,DC=CimexGroup,DC=cz"
 )
@@ -31,7 +32,7 @@ $userPath = $ADOU
 if (!([adsi]::Exists("LDAP://$userPath"))) { Write-Error "AD path doesn't exist."
 Exit }
   
-$userAccount = New-ADUser -UserPrincipalName $email -samAccountName $login -Name "$firstName $lastName" -GivenName $firstName -SurName $lastName -DisplayName "$firstName $lastName" -AccountPassword $InitialPwdSec -Path $userPath -Enabled $true -PassThru
+$userAccount = New-ADUser -UserPrincipalName $email -samAccountName $login -Name "$lastName $firstName" -GivenName $firstName -SurName $lastName -DisplayName "$lastName $firstName" -AccountPassword $InitialPwdSec -Path $userPath -Enabled $true -PassThru
 
 Start-Sleep -s 10
   
@@ -49,6 +50,7 @@ If ($ticketNum) { $userAccount | Set-ADUser -Replace @{info="$ticketNum"} }
 
 $userAccount | Set-ADUser -Add @{
     mailNickName=$login;
+    costCenter=$CostCenter
 }
 
 $userAccount | Set-ADUser -Add @{proxyAddresses="sip:$email,SMTP:$email" -Split ","}
@@ -58,4 +60,13 @@ $group = Get-ADGroup -Filter "name -like '$licenseGroup'"
 
 Add-ADGroupMember -Identity $group -Members $userAccount
 
-Write-Output "User has been successfully created"
+$statusCode = "Success"
+$statusDetails = "User has been successfully created."
+
+$objOut = [PSCustomObject]@{
+    statusCode = $statusCode
+    statusDetails = $statusDetails
+}
+
+$jsonOut = $objOut | ConvertTo-Json
+Write-Output $jsonOut
