@@ -10,6 +10,7 @@ param(
     [string] $Company,
     [string] $CostCenter,
     [string] $ManagerEmail,
+    [string] $License,
     [string] $ADOU = "OU=Users_Office_365,DC=CimexGroup,DC=cz"
 )
 
@@ -20,6 +21,7 @@ $login = $email.Split("@")[0]
 $firstName = $FullName.Split(" ")[0]
 $lastName = $FullName.Split(" ")[1]
 $InitialPwdSec = ConvertTo-SecureString -String $InitialPwd -AsPlainText -Force
+$costCenterShort = $CostCenter.Split("$")[1]
 
 If ($login.Length -gt 20) { Write-Error "Login name too long."
 Exit }
@@ -29,7 +31,7 @@ Exit }
   
 $userPath = $ADOU
   
-if (!([adsi]::Exists("LDAP://$userPath"))) { Write-Error "AD path doesn't exist."
+If (!([adsi]::Exists("LDAP://$userPath"))) { Write-Error "AD path doesn't exist."
 Exit }
   
 $userAccount = New-ADUser -UserPrincipalName $email -samAccountName $login -Name "$lastName $firstName" -GivenName $firstName -SurName $lastName -DisplayName "$lastName $firstName" -AccountPassword $InitialPwdSec -Path $userPath -Enabled $true -PassThru
@@ -50,15 +52,23 @@ If ($ticketNum) { $userAccount | Set-ADUser -Replace @{info="$ticketNum"} }
 
 $userAccount | Set-ADUser -Add @{
     mailNickName=$login;
-    costCenter=$CostCenter
+    costCenter=$costCenterShort
 }
 
 $userAccount | Set-ADUser -Add @{proxyAddresses="sip:$email,SMTP:$email" -Split ","}
 
-$licenseGroup = "License - O365 E3"
-$group = Get-ADGroup -Filter "name -like '$licenseGroup'"
+# Add Office 365 license
+$licenseGroup = Switch -Wildcard ($License) {
+    "Kiosk Online*"  {"License - Kiosk Online"}
+    "E3*" {"License - O365 E3"}
+}
 
-Add-ADGroupMember -Identity $group -Members $userAccount
+If ($licenseGroup) {
+    $group = Get-ADGroup -Filter "name -like '$licenseGroup'"
+    Add-ADGroupMember -Identity $group -Members $userAccount
+}
+
+##
 
 $statusCode = "Success"
 $statusDetails = "User has been successfully created."
