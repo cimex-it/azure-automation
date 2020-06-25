@@ -11,6 +11,7 @@ param(
     [string] $CostCenter,
     [string] $ManagerEmail,
     [string] $License,
+    [string] $PredUserEmail,
     [string] $ADOU = "OU=Users_Office_365,DC=CimexGroup,DC=cz"
 )
 
@@ -45,7 +46,7 @@ If ($position) { $userAccount | Set-ADUser -Title $position }
 If ($company) { $userAccount | Set-ADUser -Company $company }
 If ($department) { $userAccount | Set-ADUser -Department $department }
 If ($ManagerEmail) { 
-    $managerAccount = get-aduser -Filter "EmailAddress -eq '$managerEmail'"
+    $managerAccount = Get-ADUser -Filter "EmailAddress -eq '$managerEmail'"
     $userAccount | Set-ADUser -Manager $managerAccount }
 If ($ticketNum) { $userAccount | Set-ADUser -Replace @{info="$ticketNum"} }
 
@@ -69,6 +70,15 @@ If ($licenseGroup) {
 }
 
 ##
+
+# Copy user groups
+
+If ($predUserEmail) {
+    $predUser = Get-ADUser -Filter "EmailAddress -eq '$predUserEmail'" -Properties MemberOf
+    $predUser | Select-Object -ExpandProperty memberof |  Add-ADGroupMember -Members $userAccount
+}
+
+####
 
 $statusCode = "Success"
 $statusDetails = "User has been successfully created."
