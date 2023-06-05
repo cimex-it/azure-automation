@@ -3,15 +3,16 @@ $tenantID = "d97407c7-22d2-4ee5-912b-fa3d04e5e9e5"
 $applicationID = "27c76eed-c929-486f-a37b-cc3e0313d3a1"
 $clientKey = "x458Q~DkM9y.xX8s_eCTv62wCfsilO-Pu4mDUcEz"
 $tenantName = "cimex"
-$siteServerRelativeUrl = "/sites/ict"
-$libraryName = "Dokumenty"
-$sharePointRelativeFolderPath = "/General/assa abloy/DB_BACKUP/Pyramida"
 $automationVariableName = "VisionlineBackupConfig"
 $dateFormat = "yyyy_MM_dd"
 
 $backupConfigJson = (Get-AutomationVariable $automationVariableName).Replace('\', '\\')
-
 $backupConfig = $backupConfigJson | ConvertFrom-Json
+
+$siteServerRelativeUrl = $backupConfig.siteServerRelativeUrl
+$libraryName = $backupConfig.libraryName
+$sharePointRelativeFolderPath = $backupConfig.sharePointRelativeFolderPath
+$uploadFiles = $backupConfig.files
 
 function Get-GraphAccessToken {
   [CmdletBinding()]
@@ -118,17 +119,19 @@ function Upload-SharepointFile {
 Write-Output "Authenticating to Microsoft Graph via REST method"
 $graphToken = Get-GraphAccessToken -TenantId $tenantID -ApplicationId $applicationID -ClientKey $clientKey
 
-# Upload files to SharePoint
-foreach ($config in $backupConfig) {
-  $dateString = Get-Date -f $dateFormat
-  $destinationFileName = ($config.destinationFileName).Replace("%%DATE%%", $dateString)
+$dateString = Get-Date -f $dateFormat
 
-  Write-Output "Calling function to upload file $($config.fileToUpload)"
+# Upload files to SharePoint
+foreach ($file in $uploadFiles) {
+  $destinationFileName = ($file.destinationFileName).Replace("%%DATE%%", $dateString)
+  $pathFileToUpload = $file.fileToUpload
+
+  Write-Output "Calling function to upload file $($file.fileToUpload)"
   try {
-    Upload-SharepointFile -AccessToken $graphToken -SiteServerRelativeUrl $siteServerRelativeUrl -TenantName $tenantName -LibraryName $libraryName -SharePointRelativeFolderPath $sharePointRelativeFolderPath -AlternativeFileName $destinationFileName -PathFileToUpload $config.fileToUpload
+    Upload-SharepointFile -AccessToken $graphToken -SiteServerRelativeUrl $siteServerRelativeUrl -TenantName $tenantName -LibraryName $libraryName -SharePointRelativeFolderPath $sharePointRelativeFolderPath -AlternativeFileName $destinationFileName -PathFileToUpload $pathFileToUpload
   }
   catch {
-    Write-Warning "Cannot upload file $($config.fileToUpload)"
+    Write-Warning "Cannot upload file $($file.fileToUpload)"
   }
 }
 
