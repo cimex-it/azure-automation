@@ -6,22 +6,12 @@ $tenantName = "cimex"
 $siteServerRelativeUrl = "/sites/ict"
 $libraryName = "Dokumenty"
 $sharePointRelativeFolderPath = "/General/assa abloy/DB_BACKUP/Pyramida"
+$automationVariableName = "VisionlineBackupConfig"
+$dateFormat = "yyyy_MM_dd"
 
-$backupConfig = @(
-  @{
-    fileToUpload = "\\PYRPC12\Visionline\Backup\DB"
-    destinationFileName = "db_PYR_NEW_$(get-date -f yyyy_MM_dd)"
-  }
-  @{
-    fileToUpload = "\\PYRPC1XX2\Visionline\Backup\DBX"
-    destinationFileName = "db_PYR2_NEW_$(get-date -f yyyy_MM_dd)"
-  }
-  @{
-    fileToUpload = "\\PYRPC12\Visionline\Backup\DB2"
-    destinationFileName = "db_PYR2_NEW_$(get-date -f yyyy_MM_dd)"
-  }
-)
+$backupConfigJson = Get-AutomationVariable $automationVariableName
 
+$backupConfig = $backupConfigJson | ConvertFrom-Json
 
 function Get-GraphAccessToken {
   [CmdletBinding()]
@@ -128,17 +118,16 @@ function Upload-SharepointFile {
 Write-Output "Authenticating to Microsoft Graph via REST method"
 $graphToken = Get-GraphAccessToken -TenantId $tenantID -ApplicationId $applicationID -ClientKey $clientKey
 
-
-
-
 # Upload files to SharePoint
 foreach ($config in $backupConfig) {
+  $destinationFileName = ($config.destinationFileName).Replace("%%DATE%%", get-date -f $dateFormat)
+
   Write-Output "Calling function to upload file $($config.fileToUpload)"
   try {
-    Upload-SharepointFile -AccessToken $graphToken -SiteServerRelativeUrl $siteServerRelativeUrl -TenantName $tenantName -LibraryName $libraryName -SharePointRelativeFolderPath $sharePointRelativeFolderPath -AlternativeFileName $config.destinationFileName -PathFileToUpload $config.fileToUpload
+    Upload-SharepointFile -AccessToken $graphToken -SiteServerRelativeUrl $siteServerRelativeUrl -TenantName $tenantName -LibraryName $libraryName -SharePointRelativeFolderPath $sharePointRelativeFolderPath -AlternativeFileName $destinationFileName -PathFileToUpload $config.fileToUpload
   }
   catch {
-    Write-Output "Cannot upload file $($config.fileToUpload)"
+    Write-Warning "Cannot upload file $($config.fileToUpload)"
   }
 }
 
