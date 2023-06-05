@@ -13,6 +13,10 @@ $backupConfig = @(
     destinationFileName = "db_PYR_NEW_$(get-date -f yyyy_MM_dd)"
   }
   @{
+    fileToUpload = "\\PYRPC1XX2\Visionline\Backup\DBX"
+    destinationFileName = "db_PYR2_NEW_$(get-date -f yyyy_MM_dd)"
+  }
+  @{
     fileToUpload = "\\PYRPC12\Visionline\Backup\DB2"
     destinationFileName = "db_PYR2_NEW_$(get-date -f yyyy_MM_dd)"
   }
@@ -130,6 +134,11 @@ $graphToken = Get-GraphAccessToken -TenantId $tenantID -ApplicationId $applicati
 # Upload files to SharePoint
 foreach ($config in $backupConfig) {
   Write-Output "Calling function to upload file $($config.fileToUpload)"
-  Upload-SharepointFile -AccessToken $graphToken -SiteServerRelativeUrl $siteServerRelativeUrl -TenantName $tenantName -LibraryName $libraryName -SharePointRelativeFolderPath $sharePointRelativeFolderPath -AlternativeFileName $config.destinationFileName -PathFileToUpload $config.fileToUpload
+  try {
+    Upload-SharepointFile -AccessToken $graphToken -SiteServerRelativeUrl $siteServerRelativeUrl -TenantName $tenantName -LibraryName $libraryName -SharePointRelativeFolderPath $sharePointRelativeFolderPath -AlternativeFileName $config.destinationFileName -PathFileToUpload $config.fileToUpload
+  }
+  catch {
+    Write-Output "Cannot upload file $($config.fileToUpload)"
+  }
 }
 
