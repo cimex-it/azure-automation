@@ -5,7 +5,7 @@ $clientKey = "x458Q~DkM9y.xX8s_eCTv62wCfsilO-Pu4mDUcEz"
 $TenantName = "cimex"
 $SiteServerRelativeUrl = "/sites/ict"
 $LibraryName = "Dokumenty"
-$PathFileToUpload = "C:\TEMP\TEST\RemoteDesktop_1.2.4240.0_x64.msi" #"\\PYRPC12\Visionline\Backup\DB"
+$PathFileToUpload = "\\PYRPC12\Visionline\Backup\DB" #"C:\TEMP\TEST\RemoteDesktop_1.2.4240.0_x64.msi"
 $SharePointRelativeFolderPath = "/General/assa abloy/DB_BACKUP/Pyramida"
 $AlternativeFileName = "db_PYR_NEW_$(get-date -f yyyy_MM_dd)"
  
