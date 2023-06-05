@@ -120,7 +120,8 @@ $graphToken = Get-GraphAccessToken -TenantId $tenantID -ApplicationId $applicati
 
 # Upload files to SharePoint
 foreach ($config in $backupConfig) {
-  $destinationFileName = ($config.destinationFileName).Replace("%%DATE%%", get-date -f $dateFormat)
+  $dateString = Get-Date -f $dateFormat
+  $destinationFileName = ($config.destinationFileName).Replace("%%DATE%%", $dateString)
 
   Write-Output "Calling function to upload file $($config.fileToUpload)"
   try {
