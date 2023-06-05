@@ -9,7 +9,7 @@ $sharePointRelativeFolderPath = "/General/assa abloy/DB_BACKUP/Pyramida"
 $automationVariableName = "VisionlineBackupConfig"
 $dateFormat = "yyyy_MM_dd"
 
-$backupConfigJson = Get-AutomationVariable $automationVariableName
+$backupConfigJson = (Get-AutomationVariable $automationVariableName).Replace('\', '\\')
 
 $backupConfig = $backupConfigJson | ConvertFrom-Json
 
