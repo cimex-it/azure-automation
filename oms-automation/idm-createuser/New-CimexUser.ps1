@@ -60,8 +60,8 @@ $userAccount | Set-ADUser -Add @{proxyAddresses="sip:$email,SMTP:$email" -Split 
 
 # Add Office 365 license
 $licenseGroup = Switch -Wildcard ($License) {
-    "Kiosk Online*"  {"License - Kiosk Online"}
-    "E3*" {"License - O365 E3"}
+    "Kiosk Online*"  {"License - O365 K1"}
+    "M365 Business Standard*" {"License - M365 Standard"}
 }
 
 If ($licenseGroup) {
