@@ -1,7 +1,7 @@
 # Connecting to Azure Parameters
 $tenantID = "d97407c7-22d2-4ee5-912b-fa3d04e5e9e5"
 $applicationID = "27c76eed-c929-486f-a37b-cc3e0313d3a1"
-$clientKey = "x458Q~DkM9y.xX8s_eCTv62wCfsilO-Pu4mDUcEz"
+$clientKey = Get-AutomationVariable "VisionLineBackupSecret"
 $tenantName = "cimex"
 $automationVariableName = "VisionlineBackupConfig"
 $dateFormat = "yyyy_MM_dd"
