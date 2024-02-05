@@ -9,7 +9,7 @@ try {
   #Get the token using a managed identity and connect to graph using that token
   Connect-AzAccount -Identity -ErrorAction Stop | Out-Null
   $AccessToken = Get-AzAccessToken -ResourceTypeName MSGraph -ErrorAction Stop | select -ExpandProperty Token
-  Connect-Graph -AccessToken $AccessToken -ErrorAction Stop | Out-Null
+  Connect-MgGraph -AccessToken $AccessToken -ErrorAction Stop | Out-Null
 } catch {
   Write-Output $_.Exception.Message -ErrorAction Stop
 }
