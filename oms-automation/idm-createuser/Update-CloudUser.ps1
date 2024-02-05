@@ -10,7 +10,7 @@ try {
   Connect-AzAccount -Identity -ErrorAction Stop | Out-Null
   $AccessToken = Get-AzAccessToken -ResourceTypeName MSGraph -ErrorAction Stop | select -ExpandProperty Token
   $AccessTokenSec = ConvertTo-SecureString -String $AccessToken -AsPlainText -Force
-  Connect-MgGraph -AccessToken $AccessToken -ErrorAction Stop | Out-Null
+  Connect-MgGraph -AccessToken $AccessTokenSec -ErrorAction Stop | Out-Null
 } catch {
   Write-Output $_.Exception.Message -ErrorAction Stop
 }
