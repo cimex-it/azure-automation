@@ -11,13 +11,13 @@ try {
   $AccessToken = Get-AzAccessToken -ResourceTypeName MSGraph -ErrorAction Stop | select -ExpandProperty Token
   Connect-Graph -AccessToken $AccessToken -ErrorAction Stop | Out-Null
 } catch {
-  Write-Error $_.Exception.Message -ErrorAction Stop
+  Write-Output $_.Exception.Message -ErrorAction Stop
 }
 
 try {
   $user = Get-MgUser -UserId $Email
 } catch {
-  Write-Error $_.Exception.Message -ErrorAction Stop
+  Write-Output $_.Exception.Message -ErrorAction Stop
 }
 
 Write-Output $user
