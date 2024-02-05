@@ -20,8 +20,12 @@ try {
   Write-Error $_.Exception.Message -ErrorAction Stop
 }
 
+Write-Output $user
+
 if ($PredUserEmail -ne $null) {
   $groupMembership = (Get-MgUserMemberOfAsGroup -UserId $PredUserEmail | where {$_.OnpremisesSyncEnabled -ne $true}).Id
+
+  Write-Output $groupMembership
 
   foreach ($groupId in $groupMembership) {
     New-MgGroupMember -GroupId $groupId -DirectoryObjectId $user.Id
