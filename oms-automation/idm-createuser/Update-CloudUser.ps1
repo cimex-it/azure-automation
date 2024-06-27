@@ -33,6 +33,7 @@ $licenseGroup = Switch -Wildcard ($License) {
 
 If ($licenseGroup) {
     $group = Get-MgGroup -Filter "DisplayName eq '$licenseGroup'"
+    Write-Output "Adding $Email to $($group.DisplayName) license group."
     New-MgGroupMember -GroupId $group.Id -DirectoryObjectId $user.Id
 }
 
