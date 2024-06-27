@@ -59,15 +59,15 @@ $userAccount | Set-ADUser -Add @{
 $userAccount | Set-ADUser -Add @{proxyAddresses="sip:$email,SMTP:$email" -Split ","}
 
 # Add Office 365 license
-$licenseGroup = Switch -Wildcard ($License) {
-    "Kiosk Online*"  {"License - O365 K1"}
-    "M365 Business Standard*" {"License - M365 Standard"}
-}
+#$licenseGroup = Switch -Wildcard ($License) {
+#    "Kiosk Online*"  {"License - O365 K1"}
+#    "M365 Business Standard*" {"License - M365 Standard"}
+#}
 
-If ($licenseGroup) {
-    $group = Get-ADGroup -Filter "name -like '$licenseGroup'"
-    Add-ADGroupMember -Identity $group -Members $userAccount
-}
+#If ($licenseGroup) {
+#    $group = Get-ADGroup -Filter "name -like '$licenseGroup'"
+#    Add-ADGroupMember -Identity $group -Members $userAccount
+#}
 
 ##
 
