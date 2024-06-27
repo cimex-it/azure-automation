@@ -30,7 +30,7 @@ $licenseGroup = Switch -Wildcard ($License) {
 }
 
 If ($licenseGroup) {
-    $group = Get-MgGroup -Filter "Name eq '$licenseGroup'"
+    $group = Get-MgGroup -Filter "DisplayName eq '$licenseGroup'"
     New-MgGroupMember -GroupId $group.Id -DirectoryObjectId $user.Id
 }
 
